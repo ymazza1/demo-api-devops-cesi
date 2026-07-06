@@ -32,7 +32,7 @@ function createApp() {
   // GET /  -> baseline : réponse immédiate.
   app.get("/", (req, res) => {
     // --- Ligne correcte (état nominal) : le test GET / attend status === "ok".
-    res.json({ status: "ok", service: "demo-api", version: "1.0.0" });
+    res.json({ status: "ko", service: "demo-api", version: "1.0.0" });
 
     // --- [TP1] RÉGRESSION VOLONTAIRE ---
     // Pour l'étape "casser le test" du TP GitHub Actions : commenter la ligne
