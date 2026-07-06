@@ -1,0 +1,20 @@
+# docker-compose du TP 2 (Docker).
+# Ce fichier reproduit de façon déclarative ce que le stagiaire a d'abord fait
+# à la main : construire l'image, lancer le conteneur, le placer sur un réseau
+# défini par l'utilisateur (où la résolution DNS par nom de service fonctionne).
+services:
+  demo-api:
+    build: .
+    image: demo-api:1.0.0
+    container_name: demo-api
+    ports:
+      - "3000:3000"
+    networks:
+      - demo-net
+    restart: unless-stopped
+
+networks:
+  # Réseau "bridge" défini par l'utilisateur : contrairement au bridge par
+  # défaut, il fournit la résolution DNS interne par nom de service.
+  demo-net:
+    driver: bridge

@@ -1,0 +1,44 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "title": "Débit de requêtes (req/s par route)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "sum by (route) (rate(http_requests_total[1m]))", "legendFormat": "{{route}}" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" }, "overrides": [] }
+    },
+    {
+      "title": "Latence (95e percentile, secondes)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum by (le, route) (rate(http_request_duration_seconds_bucket[1m])))", "legendFormat": "{{route}}" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    },
+    {
+      "title": "Taux d'erreur (part des réponses 4xx et 5xx)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "sum(rate(http_requests_total{status_code=~\"4..|5..\"}[1m])) / sum(rate(http_requests_total[1m]))", "legendFormat": "taux d'erreur global" },
+        { "expr": "sum(rate(http_requests_total{status_code=~\"5..\"}[1m])) / sum(rate(http_requests_total[1m]))", "legendFormat": "dont erreurs serveur (5xx)" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0 }, "overrides": [] }
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "demo-api — Observabilité",
+  "uid": "demo-api-observabilite",
+  "version": 1
+}

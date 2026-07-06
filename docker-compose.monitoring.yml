@@ -1,0 +1,50 @@
+# docker-compose du TP 3 (monitoring).
+# Lance trois services d'un coup : l'API instrumentée, Prometheus (collecte),
+# et Grafana (visualisation). Tout est pré-configuré : le stagiaire lance et
+# observe, il n'a rien à paramétrer.
+services:
+  demo-api:
+    build: .
+    image: demo-api:1.0.0
+    container_name: demo-api
+    ports:
+      - "3000:3000"
+    networks:
+      - demo-net
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      # Monte la configuration de scrape en lecture seule.
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - demo-net
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000" # Grafana écoute sur 3000 dans le conteneur, publié sur 3001.
+    environment:
+      # Identifiants simples pour le TP (à ne pas reproduire en production).
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      # Provisioning automatique : datasource + dashboards.
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - demo-net
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+networks:
+  demo-net:
+    driver: bridge

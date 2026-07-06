@@ -1,0 +1,13 @@
+# Provisioning automatique de la source de données Grafana.
+# Au démarrage, Grafana branche automatiquement Prometheus : le stagiaire
+# n'a aucune configuration à faire.
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # URL interne : "prometheus" est résolu par le DNS du réseau Docker.
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true

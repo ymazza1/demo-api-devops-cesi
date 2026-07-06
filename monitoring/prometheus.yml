@@ -1,0 +1,18 @@
+# Configuration Prometheus pour le TP 3.
+# Prometheus interroge ("scrape") périodiquement la route /metrics de l'API.
+global:
+  scrape_interval: 5s # fréquence de collecte : toutes les 5 secondes.
+
+scrape_configs:
+  # Cible : l'application demo-api.
+  # Le nom d'hôte "demo-api" est résolu par le DNS interne du réseau Docker
+  # (les services d'un même docker-compose se joignent par leur nom).
+  - job_name: "demo-api"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["demo-api:3000"]
+
+  # Cible : Prometheus lui-même (utile pour vérifier qu'il tourne).
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]

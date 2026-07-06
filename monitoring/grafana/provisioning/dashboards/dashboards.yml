@@ -1,0 +1,14 @@
+# Indique à Grafana de charger automatiquement les dashboards trouvés
+# dans le dossier monté (voir docker-compose.monitoring.yml).
+apiVersion: 1
+
+providers:
+  - name: "demo-api-dashboards"
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
